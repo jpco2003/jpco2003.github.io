@@ -1,0 +1,91 @@
+---
+import { getCollection } from 'astro:content';
+
+// Get the about and details data from the content collection
+const devCollection = await getCollection('dev');
+const detailsEntry = devCollection.find(entry => entry.slug === 'details');
+
+if (!detailsEntry) {
+  throw new Error('Details data not found. Please ensure details.md exists in the content collection.');
+}
+
+const { data: detailsData, body: detailsBody } = detailsEntry;
+
+export const prerender = true;
+---
+
+  <div class="w3-twothird">
+
+        <div class="w3-container w3-card" style="background-color: #070707;">
+          <h2 class="w3-text-white w3-padding-16"><i
+              class="fas fa-user-tie fa-fw w3-margin-right w3-xxlarge w3-text-blue"></i>Perfil</h2>
+          <div class="w3-container">
+            <p class="w3-text-grey">{detailsBody}</p>
+            <br>
+          </div>
+        </div>
+        <br>
+        <div class="w3-container w3-card" style="background-color: #070707;">
+          <h2 class="w3-text-white w3-padding-16"><i
+              class="fa fa-certificate fa-fw w3-margin-right w3-xxlarge w3-text-blue"></i>Educación</h2>
+          
+          {detailsData.educacion?.map((educacion) => (
+            <div class="w3-container">
+              <h5 class="w3-text-grey"><b>{educacion.institucion}</b></h5>
+              <h6 class="w3-text-blue"><i class="fa fa-calendar fa-fw w3-margin-right"></i>{educacion.periodo}</h6>
+              <p class="w3-text-grey">{educacion.carrera}</p>
+              {educacion !== detailsData.educacion[detailsData.educacion.length - 1] && <hr>}
+            </div>
+          ))}
+          
+          <br>
+        </div>
+        <br>
+        <div class="w3-container w3-card w3-margin-bottom" style="background-color: #070707;">
+          <h2 class="w3-text-white w3-padding-16"><i
+              class="fa fa-star fa-fw w3-margin-right w3-xxlarge w3-text-blue"></i>Reconocimientos Otorgados</h2>
+          
+          {detailsData.reconocimientos?.map((reconocimiento) => (
+            <div class="w3-container">
+              <h5 class="w3-text-grey"><b>{reconocimiento.nombre}</b></h5>
+              <a href={`src/assets/CERTIFICADOS/${reconocimiento.certificado}`} download={reconocimiento.certificado} class="w3-text-blue-gray">Descargar Certificado</a>
+              <h6 class="w3-text-blue"><i class="fa fa-calendar fa-fw w3-margin-right"></i>{reconocimiento.fecha} - <span
+                  class="w3-tag w3-blue w3-round">Entrega del Certificado</span></h6>
+              <p class="w3-text-grey">{reconocimiento.descripcion}</p>
+              {reconocimiento !== detailsData.reconocimientos[detailsData.reconocimientos.length - 1] && <hr>}
+            </div>
+          ))}
+        </div>
+
+        <div class="w3-container w3-card" style="background-color: #070707;">
+          <h2 class="w3-text-white w3-padding-16"><i
+              class="fa fa-suitcase fa-fw w3-margin-right w3-xxlarge w3-text-blue"></i>Experiencia Adquirida</h2>
+          
+          {detailsData.experiencia?.map((exp) => (
+            <div class="w3-container">
+              <h5 class="w3-text-grey"><b>{exp.empresa}</b></h5>
+              <h6 class="w3-text-blue"><i class="fa fa-calendar fa-fw w3-margin-right"></i>{exp.periodo}</h6>
+              <p class="w3-text-grey"><b>{exp.cargo}</b><br />{exp.descripcion}</p>
+              {Array.isArray(exp.responsabilidades) && exp.responsabilidades.length > 0 && (
+                <ul>
+                  {exp.responsabilidades.map((responsabilidad) => (
+                    <li class="w3-text-grey">{String(responsabilidad)}</li>
+                  ))}
+                </ul>
+              )}
+              {Array.isArray(exp.herramientas) && exp.herramientas.length > 0 && (
+                <>
+                  <p class="w3-text-grey"><b>Herramientas utilizadas:</b></p>
+                  <ul>
+                    {exp.herramientas.map((herramienta) => (
+                      <li class="w3-text-grey">{String(herramienta)}</li>
+                    ))}
+                  </ul>
+                </>
+              )}
+              {exp !== detailsData.experiencia[detailsData.experiencia.length - 1] && <hr />}
+            </div>
+          ))}
+    </div>
+  </div>
+</div>

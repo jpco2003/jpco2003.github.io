@@ -1,0 +1,127 @@
+---
+import { getCollection } from 'astro:content';
+
+// Get the about data from the content collection
+const aboutCollection = await getCollection('dev');
+const aboutData = aboutCollection.find(entry => entry.slug === 'about')?.data;
+
+// Ensure data exists
+if (!aboutData) {
+  throw new Error('About data not found. Please ensure about.md exists in the content collection.');
+}
+
+export const prerender = true;
+---
+
+<div class="w3-third">
+  <div class="w3-text-grey" style="background-color: #070707;">
+    <div class="w3-display-container">
+      <img src="public/fotoCurriculum.webp" style="width:100%" alt="Avatar" />
+      <br />
+      <br />
+      <div class="w3-center w3-container w3-text-white">
+        <h2><b>{aboutData.nombre}</b></h2>
+      </div>
+      <br />
+    </div>
+    <div class="w3-container">
+      <p>
+        <i class="fa fa-briefcase fa-fw w3-margin-right w3-large w3-text-blue"></i>{aboutData.profesion}
+      </p>
+      <p>
+        <i class="fa fa-map fa-fw w3-margin-right w3-large w3-text-blue"></i>{aboutData.ubicacion}
+      </p>
+      <p>
+        <i class="fa fa-home fa-fw w3-margin-right w3-large w3-text-blue"></i>{aboutData.direccion}
+      </p>
+      <p>
+        <i class="fa fa-envelope fa-fw w3-margin-right w3-large w3-text-blue"></i>
+        <a href="mailto:{aboutData.email}">{aboutData.email}</a>
+      </p>
+      <p>
+        <i class="fa fa-phone fa-fw w3-margin-right w3-large w3-text-blue"></i>
+        <a href={`https://api.whatsapp.com/send?phone=${aboutData.telefono}&text=Hola%20%F0%9F%98%83%2C%20acabo%20de%20ver%20tu%20pagina%2C%20soy%20`}>
+          {aboutData.telefono.replace('593', '0')}
+        </a>
+      </p>
+      <hr />
+
+      <p class="w3-text-white">
+        <b><i class="fa fa-asterisk fa-fw w3-margin-right w3-text-blue"></i>Me destaco en:</b>
+      </p>
+
+      {aboutData.habilidades_tecnicas.map((habilidad:any) => (
+        <div>
+          <p>{habilidad.nombre}</p>
+          <div class="w3-light-grey w3-round-xlarge w3-small">
+            <div
+              class="w3-container w3-center w3-round-xlarge w3-blue"
+              style={`width:${habilidad.nivel}%`}
+            >
+              {habilidad.nivel}%
+            </div>
+          </div>
+        </div>
+      ))}
+
+      <p class="w3-text-white">
+        <b><i class="fa fa-heart fa-fw w3-margin-right w3-text-blue"></i>Habilidades Blandas:</b>
+      </p>
+
+      {aboutData.habilidades_blandas.map((habilidad:any) => (
+        <div>
+          <p>{habilidad.nombre}</p>
+          <div class="w3-light-grey w3-round-xlarge w3-small">
+            <div
+              class="w3-container w3-center w3-round-xlarge w3-blue"
+              style={`width:${habilidad.nivel}%`}
+            >
+              {habilidad.nivel}%
+            </div>
+          </div>
+        </div>
+      ))}
+
+      <br />
+      <hr />
+      <p class="w3-large w3-text-white">
+        <b><i class="fa fa-globe fa-fw w3-margin-right w3-text-blue"></i>Idiomas</b>
+      </p>
+      
+      {aboutData.idiomas.map((idioma:any) => (
+        <div>
+          <p>{idioma.nombre}</p>
+          <div class="w3-light-grey w3-round-xlarge">
+            <div 
+              class="w3-round-xlarge w3-blue" 
+              style={`height:24px;width:${idioma.nombre === 'Español' ? '100' : idioma.nivel === 'Intermedio (65%)' ? '65' : '100'}%`}
+            >
+            </div>
+          </div>
+        </div>
+      ))}
+
+      <br />
+      <hr />
+      <p class="w3-large w3-text-white">
+        <b><i class="fa fa-address-card-o fa-fw w3-margin-right w3-text-blue"></i>Referencias</b>
+      </p>
+
+      {aboutData.referencias.map((referencia:any) => (
+        <div>
+          <p>{referencia.nombre}</p>
+          <ul>
+            <p>
+              <i class="fa fa-phone fa-fw w3-margin-right w3-large w3-text-blue"></i>
+              <a href={referencia.whatsapp}>{referencia.telefono}</a>
+            </p>
+          </ul>
+        </div>
+      ))}
+
+      <br />
+    </div>
+  </div>
+  <br />
+  <!-- End Left Column -->
+</div>
