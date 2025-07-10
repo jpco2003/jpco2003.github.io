@@ -1,5 +1,7 @@
-// @ts-check
-import { defineConfig } from 'astro/config';
+import { defineConfig } from "astro/config";
 
-// https://astro.build/config
-export default defineConfig({});
+export default defineConfig({
+  site: "https://jpco2003.github.io", // reemplaza con tu URL
+  base: "/jpco2003.github.io/", // muy importante
+  outDir: "./dist",
+});
